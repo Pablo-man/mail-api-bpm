@@ -5,4 +5,8 @@ services:
     image: pamendeza/mail-api-bpm:latest
     ports:
       - "3000:3000"
+    environment:
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SENDER_EMAIL=${SENDER_EMAIL}
     restart: always
