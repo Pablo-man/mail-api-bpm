@@ -1,0 +1,22 @@
+name: Registry image
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  # MAIL API CONTINOUS DEPLOYMENT
+  login-push-mail:
+    uses: ./.github/workflows/login-build-push.yml
+    secrets:
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      repository_name: ${{ secrets.DOCKER_REPOSITORY_MAIL }}
+
+  ec2-cd-mail:
+    needs: [login-push-mail]
+    uses: ./.github/workflows/setupDocker.yml
+    secrets:
+      ec2_host: ${{ secrets.EC2_HOST_MAIL }}
+      ec2_key: ${{ secrets.EC2_KEY_MAIL }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
