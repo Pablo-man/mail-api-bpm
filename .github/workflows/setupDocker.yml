@@ -58,9 +58,5 @@ jobs:
           sudo docker-compose pull
 
           sudo docker-compose down || true
-          
-          export SMTP_USER=${{ secrets.SMTP_USER }}
-          export SMTP_PASS=${{ secrets.SMTP_PASS }}
-          export SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}
 
           sudo docker-compose up -d
