@@ -33,21 +33,26 @@ const verifySMTPConnection = async () => {
 verifySMTPConnection();
 
 export const sendEmail = async (req, res) => {
-    const { email, estadoReclamo } = req.body;
+    const { email, estadoReclamo, motivo } = req.body;
     
-    if (!email || !estadoReclamo) {
+    if (!email || !estadoReclamo || !motivo ) {
         return res.status(400).json({ success: false, message: 'El correo electrónico y el estado del reclamo son requeridos' });
     }
 
-    if (estadoReclamo !== 'aceptado' && estadoReclamo !== 'rechazado') {
-        return res.status(400).json({ success: false, message: 'Estado de reclamo inválido. Debe ser "aceptado" o "rechazado".' });
+    let asunto
+    let texto
+    if(motivo === 'recepcion'){
+        asunto= "Recepcion de su reclamo"
+        texto= "Su reclamo ha sido recibido, a continucaion procederemos a darle cumplimiento, para mas informacion su numero de reclamo es 001 "
     }
-
-    const asunto = estadoReclamo === 'aceptado' ? 'Su reclamo ha sido aceptado' : 'Su reclamo ha sido rechazado';
-    const texto = estadoReclamo === 'aceptado'
-        ? `Estimado cliente, su reclamo ha sido aceptado. Procederemos con los pasos necesarios para resolverlo.`
-        : `Estimado cliente, su reclamo ha sido rechazado. Lamentamos informarle que no cumplió con los requisitos necesarios.`;
-
+    if(motivo === 'area'){
+        asunto= "Asignacion de su reclamo"
+        texto= `Su reclamo ha sido atendido por el area de ${estadoReclamo}`
+    }
+    if(motivo === 'respuesta'){
+        asunto= "Resolucion del reclamo"
+        texto = estadoReclamo === "positivo" ? "Reclamo solventado, porfavor revisa la documentacion adjunta para conocer el resultado" : "Reclamo no resuelto, por favor comunicate nuevamente con el banco"
+    }
     try {
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
